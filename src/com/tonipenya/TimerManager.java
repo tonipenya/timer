@@ -7,6 +7,7 @@ package com.tonipenya;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -34,6 +35,10 @@ public class TimerManager implements ITimerManager {
             stt.cancel();
             tasks.remove(stt);
         }
+    }
+
+    public boolean isTaskRunning(ITask task) {
+        return tasks.contains(task);
     }
 
     public long getTimeRemaining(ITask task) {

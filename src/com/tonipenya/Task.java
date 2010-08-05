@@ -29,7 +29,6 @@ public class Task implements ITask {
     }
 
     public long getInterval() {
-        System.out.println("getInterval");
         return interval;
     }
 

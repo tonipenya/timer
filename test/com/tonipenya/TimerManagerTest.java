@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
  */
 public class TimerManagerTest {
     // TODO:  Design a running test case (with a receiver class or something) to check tha a set of tasks are executed in the proper order.
+    // TODO:  Write a test for isTaskRunning method.
 
     ITask[] tasks;
     TimerManager manager;
