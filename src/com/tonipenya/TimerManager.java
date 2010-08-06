@@ -7,7 +7,6 @@ package com.tonipenya;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  *
@@ -54,16 +53,6 @@ public class TimerManager implements ITimerManager {
 
     public List<ITask> getRunningTasks() {
         return new ArrayList<ITask>(tasks);
-    }
-
-    public ITask[] getAsArray() {
-        ITask[] lTasks = new ITask[tasks.size()];
-
-        for (int i = 0; i < tasks.size(); i++) {
-            lTasks[i] = tasks.get(i);
-        }
-
-        return lTasks;
     }
 
     public void run(ITask task) {
