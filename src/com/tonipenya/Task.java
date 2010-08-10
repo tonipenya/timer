@@ -14,6 +14,9 @@ public class Task implements ITask {
     private String name;
     private long interval;
 
+    public Task() {
+    }
+
     public Task(int id) {
         this(id, null, 0);
     }
@@ -59,5 +62,8 @@ public class Task implements ITask {
         return id == other.getId();
     }
 
-
+    public void run() {
+        System.out.println("Called run on " + this.getClass().getCanonicalName() +
+                ". Think about overriding this method");
+    }
 }

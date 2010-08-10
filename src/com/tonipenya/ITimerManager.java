@@ -12,9 +12,6 @@ import java.util.List;
  */
 public interface ITimerManager {
 
-    // TODO: This shouldn't be a public method.
-    void run(ITask task);
-
     void startTimer(ITask task);
 
     void stopTimer(ITask task);

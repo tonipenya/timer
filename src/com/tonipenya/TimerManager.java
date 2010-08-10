@@ -54,9 +54,4 @@ public class TimerManager implements ITimerManager {
     public List<ITask> getRunningTasks() {
         return new ArrayList<ITask>(tasks);
     }
-
-    public void run(ITask task) {
-        System.out.println("Running task " + task.getName());
-        tasks.remove(task);
-    }
 }

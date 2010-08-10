@@ -16,4 +16,6 @@ public interface ITask {
     String getName();
 
     long getInterval();
+
+    void run();
 }

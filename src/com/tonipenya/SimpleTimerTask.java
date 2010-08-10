@@ -10,7 +10,6 @@ import java.util.TimerTask;
  *
  * @author tonipenya
  */
-// TODO: implement equals
 // TODO: create test for equals method
 public class SimpleTimerTask extends TimerTask implements ITask {
 
@@ -25,7 +24,8 @@ public class SimpleTimerTask extends TimerTask implements ITask {
 
     @Override
     public void run() {
-        manager.run(task);
+        task.run();
+        manager.stopTimer(this);
     }
 
     public int getId() {
