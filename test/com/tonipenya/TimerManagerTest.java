@@ -4,8 +4,6 @@
  */
 package com.tonipenya;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -46,7 +44,7 @@ public class TimerManagerTest {
 
         instance.startTimer(task);
 
-        assertTrue(instance.getRunningTasks().contains(task));
+        assertTrue(instance.isTaskRunning(task));
     }
 
     @Test
@@ -57,7 +55,7 @@ public class TimerManagerTest {
         instance.startTimer(tasks[0]);
         instance.stopTimer(tasks[0]);
 
-        assertEquals(0, instance.getRunningTasks().size());
+        assertFalse(instance.isTaskRunning(tasks[0]));
     }
 
     @Test
@@ -77,16 +75,5 @@ public class TimerManagerTest {
 
         assertTrue(instance.getTimeRemaining(task) < task.getInterval());
         assertTrue(instance.getTimeRemaining(task) > 0);
-    }
-
-    @Test
-    public void testGetRunningTasks() {
-        System.out.println("getRunningTasks");
-
-        assertEquals(tasks.length, manager.getRunningTasks().size());
-
-        for (ITask task : tasks) {
-            assertTrue(manager.getRunningTasks().contains(task));
-        }
     }
 }

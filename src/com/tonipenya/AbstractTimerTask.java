@@ -5,17 +5,12 @@
 
 package com.tonipenya;
 
+import java.util.TimerTask;
+
 /**
  *
  * @author tonipenya
  */
-public interface ITask {
+public abstract class AbstractTimerTask extends TimerTask implements ITask {
 
-    void run();
-
-    int getId();
-
-    String getName();
-
-    long getInterval();
 }

@@ -4,8 +4,6 @@
  */
 package com.tonipenya;
 
-import java.util.List;
-
 /**
  *
  * @author tonipenya
@@ -17,8 +15,6 @@ public interface ITimerManager {
     void stopTimer(ITask task);
 
     boolean isTaskRunning(ITask task);
-
-    List<ITask> getRunningTasks();
 
     long getTimeRemaining(ITask task);
 }

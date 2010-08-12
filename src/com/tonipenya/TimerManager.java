@@ -14,15 +14,16 @@ import java.util.Timer;
  */
 public class TimerManager implements ITimerManager {
 
-    List<SimpleTimerTask> tasks;
+    List<AbstractTimerTask> tasks;
 
     public TimerManager() {
-        tasks = new ArrayList<SimpleTimerTask>();
+        tasks = new ArrayList<AbstractTimerTask>();
     }
 
     public void startTimer(ITask task) {
         Timer timer = new Timer(task.getName(), false);
-        SimpleTimerTask timerTask = new SimpleTimerTask(task, this);
+        // TODO: A factory is going to be needed here!
+        AbstractTimerTask timerTask = new SimpleTimerTask(task, this);
 
         timer.schedule(timerTask, task.getInterval());
         tasks.add(timerTask);
@@ -30,7 +31,7 @@ public class TimerManager implements ITimerManager {
 
     public void stopTimer(ITask task) {
         if (tasks.contains(task)) {
-            SimpleTimerTask stt = tasks.get(tasks.lastIndexOf(task));
+            AbstractTimerTask stt = tasks.get(tasks.lastIndexOf(task));
             stt.cancel();
             tasks.remove(stt);
         }
@@ -43,15 +44,11 @@ public class TimerManager implements ITimerManager {
     public long getTimeRemaining(ITask task) {
         long remaining = 0;
 
-        if (tasks.contains(task)) {
-            SimpleTimerTask stt = tasks.get(tasks.lastIndexOf(task));
+        if (isTaskRunning(task)) {
+            AbstractTimerTask stt = tasks.get(tasks.lastIndexOf(task));
             remaining = stt.scheduledExecutionTime() - System.currentTimeMillis();
         }
 
         return remaining;
-    }
-
-    public List<ITask> getRunningTasks() {
-        return new ArrayList<ITask>(tasks);
     }
 }

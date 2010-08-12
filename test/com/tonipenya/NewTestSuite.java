@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
  * @author tonipenya
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TaskTest.class, TimerManager.class})
+@Suite.SuiteClasses({TaskTest.class, TimerManagerTest.class})
 public class NewTestSuite {
 
 }

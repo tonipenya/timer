@@ -9,12 +9,12 @@ package com.tonipenya;
  * @author tonipenya
  */
 // TODO: create test for equals method
-public class SimpleTimerTask extends AbstractTimerTask {
+public class ChainTimerTask extends AbstractTimerTask {
 
-    private ITask task;
+    private TaskChain task;
     private ITimerManager manager;
 
-    public SimpleTimerTask(ITask task, ITimerManager manager) {
+    public ChainTimerTask(TaskChain task, ITimerManager manager) {
         this.task = task;
         this.manager = manager;
     }
@@ -22,7 +22,8 @@ public class SimpleTimerTask extends AbstractTimerTask {
     @Override
     public void run() {
         task.run();
-        manager.stopTimer(this);
+        manager.stopTimer(task);
+        manager.startTimer(task);
     }
 
     public int getId() {
