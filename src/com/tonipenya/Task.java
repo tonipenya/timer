@@ -14,13 +14,6 @@ public class Task implements ITask {
     private String name;
     private long interval;
 
-    public Task() {
-    }
-
-    public Task(int id) {
-        this(id, null, 0);
-    }
-
     public Task(int id, String name, long interval) {
         this.id = id;
         this.name = name;
@@ -39,18 +32,6 @@ public class Task implements ITask {
         return name;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setInterval(long interval) {
-        this.interval = interval;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || !(o instanceof ITask)) {
@@ -62,7 +43,7 @@ public class Task implements ITask {
         return id == other.getId();
     }
 
-    public void run() {
+    public void execute() {
         System.out.println("Called run on " + this.getClass().getCanonicalName() +
                 ". Think about overriding this method");
     }

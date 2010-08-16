@@ -11,11 +11,12 @@ package com.tonipenya;
  */
 public interface ITask {
 
-    void run();
+    void execute();
 
     int getId();
 
     String getName();
 
+    // TODO: Rename to getRemaining (or something).
     long getInterval();
 }

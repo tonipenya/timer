@@ -66,9 +66,8 @@ public class TimerManagerTest {
         assertEquals(0, instance.getTimeRemaining(task));
         instance.startTimer(task);
 
-        try {
-            Thread thread = new Thread();
-            thread.sleep(500);
+        try {        
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
         }

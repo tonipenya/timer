@@ -19,8 +19,7 @@ public class TaskTest {
     public void testInterval() {
         System.out.println("Interval");
         long seconds = 123456487L;
-        Task instance = new Task(124);
-        instance.setInterval(seconds);
+        Task instance = new Task(124, null, seconds);
 
         assertEquals(seconds, instance.getInterval());
     }
@@ -29,8 +28,7 @@ public class TaskTest {
     public void testName() {
         System.out.println("name");
         String name = "TestName";
-        Task instance = new Task(622);
-        instance.setName(name);
+        Task instance = new Task(622, name, 0);
 
         assertEquals(name, instance.getName());
     }

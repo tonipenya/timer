@@ -21,8 +21,13 @@ public class SimpleTimerTask extends AbstractTimerTask {
 
     @Override
     public void run() {
-        task.run();
+        task.execute();
         manager.stopTimer(this);
+    }
+
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getId() {
@@ -47,4 +52,5 @@ public class SimpleTimerTask extends AbstractTimerTask {
 
         return getId() == other.getId();
     }
+
 }
