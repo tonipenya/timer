@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
  */
 public class TimerManagerTest {
     // TODO:  Design a running test case (with a receiver class or something) to check tha a set of tasks are executed in the proper order.
-    // TODO:  Write a test for isTaskRunning method.
 
     ITask[] tasks;
     TimerManager manager;
@@ -61,10 +60,14 @@ public class TimerManagerTest {
     @Test
     public void testGetTimeRemaining() {
         System.out.println("getTimeRemaining");
-        ITask task = new Task(13, "example", 1000);
+        ITask task = new Task(52342, "example", 1000);
         TimerManager instance = new TimerManager();
+
         assertEquals(0, instance.getTimeRemaining(task));
+
         instance.startTimer(task);
+        assertTrue(instance.getTimeRemaining(task) > 0);
+        assertTrue(instance.getTimeRemaining(task) <= task.getInterval());
 
         try {        
             Thread.sleep(500);
@@ -75,4 +78,35 @@ public class TimerManagerTest {
         assertTrue(instance.getTimeRemaining(task) < task.getInterval());
         assertTrue(instance.getTimeRemaining(task) > 0);
     }
+
+    @Test
+    public void testIsTaskRunning() {
+        ITask task = new Task(3611, "testIsRunning", 1000);
+        TimerManager instance = new TimerManager();
+
+        assertFalse(instance.isTaskRunning(task));
+
+        instance.startTimer(task);
+
+        assertTrue(instance.isTaskRunning(task));
+
+        try {
+            Thread.sleep(1100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        assertFalse(instance.isTaskRunning(task));
+    }
+
+//    @Test
+//    public void testGetRunningTasks() {
+//        System.out.println("getRunningTasks");
+//
+//        assertEquals(tasks.length, manager.getRunningTasks().size());
+//
+//        for (ITask task : tasks) {
+//            assertTrue(manager.getRunningTasks().contains(task));
+//        }
+//    }
 }

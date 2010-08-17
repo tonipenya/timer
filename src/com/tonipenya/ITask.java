@@ -9,9 +9,9 @@ package com.tonipenya;
  *
  * @author tonipenya
  */
-public interface ITask {
+public interface ITask extends Runnable {
 
-    void execute();
+    void run();
 
     int getId();
 

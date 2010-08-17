@@ -9,7 +9,8 @@ package com.tonipenya;
  * @author tonipenya
  */
 // TODO: create test for equals method
-public class SimpleTimerTask extends AbstractTimerTask {
+// TODO: can't just extend task?
+public class SimpleTimerTask implements ITask {
 
     private ITask task;
     private ITimerManager manager;
@@ -21,13 +22,8 @@ public class SimpleTimerTask extends AbstractTimerTask {
 
     @Override
     public void run() {
-        task.execute();
+        task.run();
         manager.stopTimer(this);
-    }
-
-    @Override
-    public void execute() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getId() {
@@ -53,4 +49,9 @@ public class SimpleTimerTask extends AbstractTimerTask {
         return getId() == other.getId();
     }
 
+    @Override
+    public String toString() {
+    // TODO: StringBuilder?
+        return this.getClass().getName() + "[" + getId() + "]";
+    }
 }

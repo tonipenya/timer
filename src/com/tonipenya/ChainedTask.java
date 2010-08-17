@@ -27,8 +27,7 @@ public class ChainedTask implements ITask {
         this.tasks = tasks;
     }
 
-    public void execute() {
-        System.out.println("NOOOO");
+    public void run() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

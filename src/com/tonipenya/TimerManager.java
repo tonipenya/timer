@@ -5,45 +5,54 @@
 package com.tonipenya;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author tonipenya
  */
 public class TimerManager implements ITimerManager {
-    // TODO: Remove task after being executed.
-    List<AbstractTimerTask> tasks;
+    ScheduledThreadPoolExecutor stpe;
+    List<ITask> tasks;
+    // TODO: This Map MUST die.
+    Map<Integer, ScheduledFuture> futuresMap;
 
     public TimerManager() {
-        tasks = new ArrayList<AbstractTimerTask>();
+        tasks = new ArrayList<ITask>();
+        stpe = new ScheduledThreadPoolExecutor(10);
+        futuresMap = new HashMap<Integer, ScheduledFuture>();
     }
 
     public void startTimer(ITask task) {
         // TODO: A factory is going to be needed here!
         long interval = 0;
 
-        AbstractTimerTask timerTask;
+        ITask lTask;
         if (task instanceof ChainedTask) {
-            timerTask = new ChainTimerTask((ChainedTask) task, this);
+            lTask = new ChainTimerTask((ChainedTask) task, this);
             // TODO: This is a potential ArrayIndexOutOfBounds
             interval = ((ChainedTask) task).getTasks()[0].getInterval();
         } else {
-            timerTask = new SimpleTimerTask(task, this);
+            lTask = new SimpleTimerTask(task, this);
             interval = task.getInterval();
         }
 
-        Timer timer = new Timer(task.getName(), false);
-        timer.schedule(timerTask, interval);
-        tasks.add(timerTask);
+        ScheduledFuture future = stpe.schedule(lTask, interval, TimeUnit.MILLISECONDS);
+        futuresMap.put(task.getId(), future);
+
+        tasks.add(lTask);
     }
 
     public void stopTimer(ITask task) {
-        if (tasks.contains(task)) {
-            AbstractTimerTask stt = tasks.get(tasks.lastIndexOf(task));
-            stt.cancel();
-            tasks.remove(stt);
+        if (isTaskRunning(task)) {
+            ITask lTask = tasks.get(tasks.lastIndexOf(task));
+            stpe.remove(lTask);
+            tasks.remove(lTask);
         }
     }
 
@@ -65,8 +74,8 @@ public class TimerManager implements ITimerManager {
         long remaining = 0;
 
         if (isTaskRunning(task)) {
-            AbstractTimerTask stt = tasks.get(tasks.lastIndexOf(task));
-            remaining = stt.scheduledExecutionTime() - System.currentTimeMillis();
+            // TODO: this doesn't work
+            remaining = futuresMap.get(task.getId()).getDelay(TimeUnit.MILLISECONDS);
         }
 
         return remaining;

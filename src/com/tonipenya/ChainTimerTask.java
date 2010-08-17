@@ -11,7 +11,8 @@ import java.util.Timer;
  * @author tonipenya
  */
 // TODO: create test for equals method
-public class ChainTimerTask extends AbstractTimerTask {
+// TODO: can't just extend ChainTimer?
+public class ChainTimerTask implements ITask {
 
     private ChainedTask task;
     private TimerManager manager;
@@ -24,11 +25,11 @@ public class ChainTimerTask extends AbstractTimerTask {
 
     @Override
     public void run() {
-        task.getTasks()[runningTask].execute();
+        task.getTasks()[runningTask].run();
         runningTask++;
-        Timer timer = new Timer(task.getName(), false);
-        timer.schedule(this, task.getInterval());
-        System.out.println("run: " + runningTask);
+        // TODO: Rewrite thise using scheduledThreadPool
+//            Timer timer = new Timer(task.getName(), false);
+//            timer.schedule(this, task.getInterval());
     }
 
     public void execute() {
