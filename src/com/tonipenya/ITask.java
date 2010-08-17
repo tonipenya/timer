@@ -18,4 +18,7 @@ public interface ITask {
     long getInterval();
 
     void run();
+    
+    @Override
+    boolean equals(Object o);
 }

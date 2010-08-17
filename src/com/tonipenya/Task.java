@@ -62,6 +62,15 @@ public class Task implements ITask {
         return id == other.getId();
     }
 
+    @Override
+    public String toString() {
+        // TODO: StringBuilder?
+        return this.getClass().getName() + "[" + id + "]";
+    }
+
+
+
+
     public void run() {
         System.out.println("Called run on " + this.getClass().getCanonicalName() +
                 ". Think about overriding this method");

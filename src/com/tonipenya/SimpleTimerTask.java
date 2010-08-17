@@ -4,16 +4,14 @@
  */
 package com.tonipenya;
 
-import java.util.TimerTask;
-
 /**
  *
  * @author tonipenya
  */
 // TODO: create test for equals method
-public class SimpleTimerTask extends TimerTask implements ITask {
+// TODO: can't just extend task?
+public class SimpleTimerTask implements ITask, Runnable {
 
-    // TODO: remove this variable
     private ITask task;
     private ITimerManager manager;
 
@@ -50,4 +48,12 @@ public class SimpleTimerTask extends TimerTask implements ITask {
 
         return getId() == other.getId();
     }
+
+    @Override
+    public String toString() {
+    // TODO: StringBuilder?
+        return this.getClass().getName() + "[" + getId() + "]";
+    }
+
+
 }

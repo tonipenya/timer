@@ -4,8 +4,6 @@
  */
 package com.tonipenya;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -18,7 +16,6 @@ import static org.junit.Assert.*;
  */
 public class TimerManagerTest {
     // TODO:  Design a running test case (with a receiver class or something) to check tha a set of tasks are executed in the proper order.
-    // TODO:  Write a test for isTaskRunning method.
 
     ITask[] tasks;
     TimerManager manager;
@@ -46,7 +43,7 @@ public class TimerManagerTest {
 
         instance.startTimer(task);
 
-        assertTrue(instance.getRunningTasks().contains(task));
+        assertTrue(instance.isTaskRunning(task));
     }
 
     @Test
@@ -63,10 +60,14 @@ public class TimerManagerTest {
     @Test
     public void testGetTimeRemaining() {
         System.out.println("getTimeRemaining");
-        ITask task = new Task(13, "example", 1000);
+        ITask task = new Task(52342, "example", 1000);
         TimerManager instance = new TimerManager();
+
         assertEquals(0, instance.getTimeRemaining(task));
+
         instance.startTimer(task);
+        assertTrue(instance.getTimeRemaining(task) > 0);
+        assertTrue(instance.getTimeRemaining(task) <= task.getInterval());
 
         try {
             Thread thread = new Thread();
@@ -77,6 +78,26 @@ public class TimerManagerTest {
 
         assertTrue(instance.getTimeRemaining(task) < task.getInterval());
         assertTrue(instance.getTimeRemaining(task) > 0);
+    }
+
+    @Test
+    public void testIsTaskRunning() {
+        ITask task = new Task(3611, "testIsRunning", 1000);
+        TimerManager instance = new TimerManager();
+
+        assertFalse(instance.isTaskRunning(task));
+
+        instance.startTimer(task);
+
+        assertTrue(instance.isTaskRunning(task));
+
+        try {
+            Thread.sleep(1100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        assertFalse(instance.isTaskRunning(task));
     }
 
     @Test

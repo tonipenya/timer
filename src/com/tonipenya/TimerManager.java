@@ -5,8 +5,12 @@
 package com.tonipenya;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -14,24 +18,30 @@ import java.util.Timer;
  */
 public class TimerManager implements ITimerManager {
 
+    ScheduledThreadPoolExecutor stpe;
     List<SimpleTimerTask> tasks;
+    // TODO: This Map MUST die.
+    Map<Integer, ScheduledFuture> futuresMap;
 
     public TimerManager() {
         tasks = new ArrayList<SimpleTimerTask>();
+        stpe = new ScheduledThreadPoolExecutor(10);
+        futuresMap = new HashMap<Integer, ScheduledFuture>();
     }
 
     public void startTimer(ITask task) {
-        Timer timer = new Timer(task.getName(), false);
         SimpleTimerTask timerTask = new SimpleTimerTask(task, this);
 
-        timer.schedule(timerTask, task.getInterval());
+        ScheduledFuture future = stpe.schedule(timerTask, task.getInterval(), TimeUnit.MILLISECONDS);
+        futuresMap.put(task.getId(), future);
+
         tasks.add(timerTask);
     }
 
     public void stopTimer(ITask task) {
-        if (tasks.contains(task)) {
+        if (isTaskRunning(task)) {
             SimpleTimerTask stt = tasks.get(tasks.lastIndexOf(task));
-            stt.cancel();
+            stpe.remove(stt);
             tasks.remove(stt);
         }
     }
@@ -43,9 +53,9 @@ public class TimerManager implements ITimerManager {
     public long getTimeRemaining(ITask task) {
         long remaining = 0;
 
-        if (tasks.contains(task)) {
-            SimpleTimerTask stt = tasks.get(tasks.lastIndexOf(task));
-            remaining = stt.scheduledExecutionTime() - System.currentTimeMillis();
+        if (isTaskRunning(task)) {
+            // TODO: this doesn't work
+            remaining = futuresMap.get(task.getId()).getDelay(TimeUnit.MILLISECONDS);
         }
 
         return remaining;
