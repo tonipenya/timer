@@ -98,15 +98,4 @@ public class TimerManagerTest {
 
         assertFalse(instance.isTaskRunning(task));
     }
-
-//    @Test
-//    public void testGetRunningTasks() {
-//        System.out.println("getRunningTasks");
-//
-//        assertEquals(tasks.length, manager.getRunningTasks().size());
-//
-//        for (ITask task : tasks) {
-//            assertTrue(manager.getRunningTasks().contains(task));
-//        }
-//    }
 }
