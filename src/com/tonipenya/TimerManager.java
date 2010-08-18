@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @author tonipenya
  */
 public class TimerManager implements ITimerManager {
+
     ScheduledThreadPoolExecutor stpe;
     List<ITask> tasks;
     // TODO: This Map MUST die.
@@ -33,10 +34,12 @@ public class TimerManager implements ITimerManager {
         long interval = 0;
 
         ITask lTask;
-        if (task instanceof ChainedTask) {
+        if (task instanceof ChainTimerTask) {
+            lTask = task;
+            interval = ((ChainTimerTask) lTask).getCurrent().getInterval();
+        } else if (task instanceof ChainedTask) {
             lTask = new ChainTimerTask((ChainedTask) task, this);
-            // TODO: This is a potential ArrayIndexOutOfBounds
-            interval = ((ChainedTask) task).getTasks()[0].getInterval();
+            interval = ((ChainTimerTask) lTask).getCurrent().getInterval();
         } else {
             lTask = new SimpleTimerTask(task, this);
             interval = task.getInterval();
@@ -45,7 +48,12 @@ public class TimerManager implements ITimerManager {
         ScheduledFuture future = stpe.schedule(lTask, interval, TimeUnit.MILLISECONDS);
         futuresMap.put(task.getId(), future);
 
-        tasks.add(lTask);
+        // TODO: No, this is not the way. Use a set or something that only allows one instance.
+        if (isTaskRunning(task)) {
+            tasks.set(tasks.lastIndexOf(task), task);
+        } else {
+            tasks.add(lTask);
+        }
     }
 
     public void stopTimer(ITask task) {
@@ -61,8 +69,8 @@ public class TimerManager implements ITimerManager {
     }
 
     public <T extends ITask> ITask getRunningInstance(T task) {
-
         ITask outcome = task;
+        
         if (isTaskRunning(task)) {
             outcome = tasks.get(tasks.lastIndexOf(task));
         }
@@ -74,7 +82,6 @@ public class TimerManager implements ITimerManager {
         long remaining = 0;
 
         if (isTaskRunning(task)) {
-            // TODO: this doesn't work
             remaining = futuresMap.get(task.getId()).getDelay(TimeUnit.MILLISECONDS);
         }
 
