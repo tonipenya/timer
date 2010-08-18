@@ -99,12 +99,9 @@ public class ChainTimerTaskTest {
         pause(50);
 
         for (ITask task : tasks) {
-            System.out.println(name + " - " + task.getName() + ", " + manager.getRunningInstance(tc).getName());
             assertEquals(name + " - " + task.getName(), manager.getRunningInstance(tc).getName());
             
-            System.out.println(0 + " <= " + manager.getRunningInstance(tc).getInterval());
             assertTrue(0 <= manager.getRunningInstance(tc).getInterval());
-            System.out.println(manager.getRunningInstance(tc).getInterval() + " <=  " + task.getInterval());
             assertTrue(manager.getRunningInstance(tc).getInterval() <= task.getInterval());
 
             assertEquals(id, manager.getRunningInstance(tc).getId());
@@ -112,7 +109,7 @@ public class ChainTimerTaskTest {
         }
 
         // After Run
-        assertEquals(name + " - " + tasks[0].getName(), manager.getRunningInstance(tc).getName());
+        assertEquals(name, manager.getRunningInstance(tc).getName());
         assertEquals(totalInterval, manager.getRunningInstance(tc).getInterval());
     }
 
@@ -123,26 +120,10 @@ public class ChainTimerTaskTest {
 
     private void pause(long ms) {
         try {
-            System.out.println("ms: " + ms);
             Thread.sleep(ms);
         } catch (InterruptedException ex) {
             Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }
-
-    private class Runner extends Thread {
-        ITask task;
-
-        public Runner(ITask task) {
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            manager.startTimer(task);
-        }
-
 
     }
 }
