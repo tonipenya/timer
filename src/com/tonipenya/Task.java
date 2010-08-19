@@ -13,6 +13,7 @@ public class Task implements ITask {
     private int id;
     private String name;
     private long interval;
+    private Runnable command;
 
     public Task(int id, String name, long interval) {
         this.id = id;
@@ -30,6 +31,14 @@ public class Task implements ITask {
 
     public String getName() {
         return name;
+    }
+
+    public Runnable getCommand() {
+        return command;
+    }
+
+    public void setCommand(Runnable command) {
+        this.command = command;
     }
 
     @Override
@@ -50,8 +59,5 @@ public class Task implements ITask {
         return this.getClass().getName() + "[" + id + "]";
     }
 
-    public void run() {
-        System.out.println("Called run on " + this.getClass().getCanonicalName() +
-                ". Think about overriding this method");
-    }
+
 }

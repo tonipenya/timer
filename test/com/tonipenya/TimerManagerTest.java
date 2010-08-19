@@ -17,22 +17,29 @@ import static org.junit.Assert.*;
 public class TimerManagerTest {
     // TODO:  Design a running test case (with a receiver class or something) to check tha a set of tasks are executed in the proper order.
 
+    private static final long MARGIN = (long) 1.1;
     ITask[] tasks;
-    TimerManager manager;
+    TestCommand[] commands;
+    ITimerManager manager;
 
     @Before
     public void setup() {
         tasks = new ITask[3];
-
-        tasks[0] = new Task(0, "task0", 10);
-        tasks[1] = new Task(1, "task1", 11);
-        tasks[2] = new Task(2, "task2", 12);
+        tasks[0] = new Task(0, "task0", 1000);
+        tasks[1] = new Task(1, "task1", 2000);
+        tasks[2] = new Task(2, "task2", 3000);
 
         manager = new TimerManager();
 
-        for (ITask task : tasks) {
-            manager.startTimer(task);
-        }
+        commands = new TestCommand[3];
+        commands[0] = new TestCommand(manager, tasks[0]);
+        commands[1] = new TestCommand(manager, tasks[1]);
+        commands[2] = new TestCommand(manager, tasks[2]);
+
+        tasks[0].setCommand(commands[0]);
+        tasks[2].setCommand(commands[1]);
+        tasks[1].setCommand(commands[2]);
+
     }
 
     @Test
@@ -49,53 +56,82 @@ public class TimerManagerTest {
     @Test
     public void testStopTask() {
         System.out.println("stopTask");
-        TimerManager instance = new TimerManager();
 
-        instance.startTimer(tasks[0]);
-        instance.stopTimer(tasks[0]);
+        manager.startTimer(tasks[0]);
+        manager.stopTimer(tasks[0]);
 
-        assertFalse(instance.isTaskRunning(tasks[0]));
+        assertFalse(manager.isTaskRunning(tasks[0]));
+    }
+
+    @Test
+    public void testCommandCalled() {
+        ITask task = tasks[0];
+
+        manager.startTimer(task);
+
+        pause(task.getInterval() * MARGIN);
+
+        assertTrue(commands[0].isCalled());
+    }
+
+    @Test
+    public void testIsTaskRunning() {
+        ITask task = tasks[0];
+
+        assertFalse(manager.isTaskRunning(task));
+
+        manager.startTimer(task);
+
+        assertTrue(manager.isTaskRunning(task));
+
+        pause(task.getInterval() * MARGIN);
+
+        assertFalse(manager.isTaskRunning(task));
     }
 
     @Test
     public void testGetTimeRemaining() {
         System.out.println("getTimeRemaining");
-        ITask task = new Task(52342, "example", 1000);
-        TimerManager instance = new TimerManager();
+        ITask task = tasks[0];
 
-        assertEquals(0, instance.getTimeRemaining(task));
+        assertEquals(0, manager.getTimeRemaining(task));
 
-        instance.startTimer(task);
-        assertTrue(instance.getTimeRemaining(task) > 0);
-        assertTrue(instance.getTimeRemaining(task) <= task.getInterval());
+        manager.startTimer(task);
+        assertTrue(manager.getTimeRemaining(task) > 0);
+        assertTrue(manager.getTimeRemaining(task) <= task.getInterval());
 
-        try {        
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        pause(task.getInterval() * MARGIN);
 
-        assertTrue(instance.getTimeRemaining(task) < task.getInterval());
-        assertTrue(instance.getTimeRemaining(task) > 0);
+        assertTrue(manager.getTimeRemaining(task) < task.getInterval());
+        assertTrue(manager.getTimeRemaining(task) == 0);
     }
 
-    @Test
-    public void testIsTaskRunning() {
-        ITask task = new Task(3611, "testIsRunning", 1000);
-        TimerManager instance = new TimerManager();
-
-        assertFalse(instance.isTaskRunning(task));
-
-        instance.startTimer(task);
-
-        assertTrue(instance.isTaskRunning(task));
-
+    private void pause(long ms) {
         try {
-            Thread.sleep(1100);
+            Thread.sleep(ms);
         } catch (InterruptedException ex) {
             Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
-        assertFalse(instance.isTaskRunning(task));
+    private class TestCommand implements Runnable {
+
+        private boolean called = false;
+        private ITimerManager manager;
+        private ITask task;
+
+        public TestCommand(ITimerManager manager, ITask task) {
+            this.manager = manager;
+            this.task = task;
+        }
+
+        public boolean isCalled() {
+            return called;
+        }
+
+        public void run() {
+            called = true;
+            manager.stopTimer(task);
+        }
     }
 }

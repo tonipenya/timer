@@ -19,6 +19,5 @@ public interface ITimerManager {
     // TODO: Rename and say clearly in the javadoc that, in case the task is not running, it returns the same received;
     <T extends ITask> ITask getRunningInstance(T task);
 
-    // TODO: Remove this method. Use getRunningInstance(ITask).getInterval.
     long getTimeRemaining(ITask task);
 }

@@ -9,11 +9,17 @@ package com.tonipenya;
  * @author tonipenya
  */
 public class ChainedTask implements ITask {
+
     private int id;
     private String name;
     private ITask[] tasks;
+    private Runnable command;
 
     public ChainedTask(int id, String name, ITask[] tasks) {
+        this(id, name, tasks, null);
+    }
+
+    public ChainedTask(int id, String name, ITask[] tasks, Runnable command) {
         if (name == null) {
             throw new UnsupportedOperationException("Name cannot be null.");
         }
@@ -25,10 +31,7 @@ public class ChainedTask implements ITask {
         this.id = id;
         this.name = name;
         this.tasks = tasks;
-    }
-
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.command = command;
     }
 
     public int getId() {
@@ -41,7 +44,7 @@ public class ChainedTask implements ITask {
 
     public long getInterval() {
         long totalInterval = 0;
-        
+
         for (ITask task : tasks) {
             totalInterval += task.getInterval();
         }
@@ -51,6 +54,14 @@ public class ChainedTask implements ITask {
 
     public ITask[] getTasks() {
         return tasks;
+    }
+
+    public Runnable getCommand() {
+        return command;
+    }
+
+    public void setCommand(Runnable command) {
+        this.command = command;
     }
 
     @Override

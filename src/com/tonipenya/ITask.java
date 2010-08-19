@@ -9,9 +9,7 @@ package com.tonipenya;
  *
  * @author tonipenya
  */
-public interface ITask extends Runnable {
-
-    void run();
+public interface ITask {
 
     int getId();
 
@@ -19,4 +17,8 @@ public interface ITask extends Runnable {
 
     // TODO: Rename to getRemaining (or something).
     long getInterval();
+
+    Runnable getCommand();
+
+    void setCommand(Runnable command);
 }
