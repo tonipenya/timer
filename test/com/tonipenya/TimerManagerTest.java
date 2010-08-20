@@ -6,7 +6,6 @@ package com.tonipenya;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,95 +14,145 @@ import static org.junit.Assert.*;
  * @author tonipenya
  */
 public class TimerManagerTest {
-    // TODO:  Design a running test case (with a receiver class or something) to check tha a set of tasks are executed in the proper order.
 
-    private static final long MARGIN = (long) 1.1;
-    ITask[] tasks;
-    TestCommand[] commands;
-    ITimerManager manager;
-
-    @Before
-    public void setup() {
-        tasks = new ITask[3];
-        tasks[0] = new Task(0, "task0", 1000);
-        tasks[1] = new Task(1, "task1", 2000);
-        tasks[2] = new Task(2, "task2", 3000);
-
-        manager = new TimerManager();
-
-        commands = new TestCommand[3];
-        commands[0] = new TestCommand(manager, tasks[0]);
-        commands[1] = new TestCommand(manager, tasks[1]);
-        commands[2] = new TestCommand(manager, tasks[2]);
-
-        tasks[0].setCommand(commands[0]);
-        tasks[2].setCommand(commands[1]);
-        tasks[1].setCommand(commands[2]);
-
-    }
+    private static final float MARGIN = 1.1f;
 
     @Test
     public void testStartTask() {
-        System.out.println("startTask");
         TimerManager instance = new TimerManager();
-        ITask task = tasks[0];
+        ICommand command = new TestCommand();
 
-        instance.startTimer(task);
+        instance.startTimer(command, 1000);
 
-        assertTrue(instance.isTaskRunning(task));
+        assertTrue(instance.isRunning(command));
     }
 
     @Test
     public void testStopTask() {
-        System.out.println("stopTask");
+        TimerManager instance = new TimerManager();
+        ICommand command = new TestCommand();
 
-        manager.startTimer(tasks[0]);
-        manager.stopTimer(tasks[0]);
+        instance.startTimer(command, 1000);
+        instance.stopTimer(command);
 
-        assertFalse(manager.isTaskRunning(tasks[0]));
+        assertFalse(instance.isRunning(command));
+        assertFalse(((TestCommand) command).called);
     }
 
     @Test
     public void testCommandCalled() {
-        ITask task = tasks[0];
+        TimerManager instance = new TimerManager();
+        long interval = 100;
+        ICommand command = new TestCommand();
 
-        manager.startTimer(task);
+        instance.startTimer(command, interval);
 
-        pause(task.getInterval() * MARGIN);
+        pause((long) (interval * MARGIN));
 
-        assertTrue(commands[0].isCalled());
+        assertTrue(((TestCommand) command).called);
     }
 
     @Test
-    public void testIsTaskRunning() {
-        ITask task = tasks[0];
+    public void testIsRunning() {
+        TimerManager instance = new TimerManager();
+        long interval = 1000;
+        ICommand command = new TestCommand();
 
-        assertFalse(manager.isTaskRunning(task));
+        assertFalse(instance.isRunning(command));
 
-        manager.startTimer(task);
+        instance.startTimer(command, interval);
 
-        assertTrue(manager.isTaskRunning(task));
+        assertTrue(instance.isRunning(command));
 
-        pause(task.getInterval() * MARGIN);
+        pause((long) (interval * MARGIN));
 
-        assertFalse(manager.isTaskRunning(task));
+        assertFalse(instance.isRunning(command));
     }
 
     @Test
     public void testGetTimeRemaining() {
-        System.out.println("getTimeRemaining");
-        ITask task = tasks[0];
+        TimerManager instance = new TimerManager();
+        long interval = 1000;
+        ICommand command = new TestCommand();
 
-        assertEquals(0, manager.getTimeRemaining(task));
+        boolean exceptionthrown = false;
 
-        manager.startTimer(task);
-        assertTrue(manager.getTimeRemaining(task) > 0);
-        assertTrue(manager.getTimeRemaining(task) <= task.getInterval());
+        try {
+            instance.getTimeRemaining(command);
+        } catch (UnsupportedOperationException uoe) {
+            exceptionthrown = true;
+        }
 
-        pause(task.getInterval() * MARGIN);
+        assertTrue(exceptionthrown);
 
-        assertTrue(manager.getTimeRemaining(task) < task.getInterval());
-        assertTrue(manager.getTimeRemaining(task) == 0);
+        instance.startTimer(command, interval);
+
+        assertTrue(instance.getTimeRemaining(command) > 0);
+        assertTrue(instance.getTimeRemaining(command) < interval);
+
+        pause((long) (interval * MARGIN));
+
+        exceptionthrown = false;
+
+        try {
+            instance.getTimeRemaining(command);
+        } catch (UnsupportedOperationException uoe) {
+            exceptionthrown = true;
+        }
+
+        assertTrue(exceptionthrown);
+    }
+
+    @Test
+    public void testGetRunning() {
+        TimerManager instance = new TimerManager();
+        ICommand command0 = new TestCommand();
+        ICommand command1 = new TestCommand();
+        ICommand command2 = new TestCommand();
+        long internval = 100;
+
+        instance.startTimer(command0, internval);
+        assertTrue(instance.getRunning().contains(command0));
+        assertFalse(instance.getRunning().contains(command1));
+        assertFalse(instance.getRunning().contains(command2));
+        assertEquals(1, instance.getRunning().size());
+
+        pause((long) (internval * 0.3));
+
+        instance.startTimer(command1, internval);
+        assertTrue(instance.getRunning().contains(command0));
+        assertTrue(instance.getRunning().contains(command1));
+        assertFalse(instance.getRunning().contains(command2));
+        assertEquals(2, instance.getRunning().size());
+
+        pause((long) (internval * 0.3));
+
+        instance.startTimer(command2, internval);
+        assertTrue(instance.getRunning().contains(command0));
+        assertTrue(instance.getRunning().contains(command1));
+        assertTrue(instance.getRunning().contains(command2));
+        assertEquals(3, instance.getRunning().size());
+
+        pause((long) (internval * 0.5));
+
+        assertFalse(instance.getRunning().contains(command0));
+        assertTrue(instance.getRunning().contains(command1));
+        assertTrue(instance.getRunning().contains(command2));
+        assertEquals(2, instance.getRunning().size());
+
+        pause((long) (internval * 0.3));
+
+        assertFalse(instance.getRunning().contains(command0));
+        assertFalse(instance.getRunning().contains(command1));
+        assertTrue(instance.getRunning().contains(command2));
+        assertEquals(1, instance.getRunning().size());
+
+        pause((long) (internval * 0.3));
+
+        assertFalse(instance.getRunning().contains(command0));
+        assertFalse(instance.getRunning().contains(command1));
+        assertFalse(instance.getRunning().contains(command2));
+        assertEquals(0, instance.getRunning().size());
     }
 
     private void pause(long ms) {
@@ -114,24 +163,16 @@ public class TimerManagerTest {
         }
     }
 
-    private class TestCommand implements Runnable {
+    private class TestCommand implements ICommand {
 
-        private boolean called = false;
-        private ITimerManager manager;
-        private ITask task;
-
-        public TestCommand(ITimerManager manager, ITask task) {
-            this.manager = manager;
-            this.task = task;
-        }
-
-        public boolean isCalled() {
-            return called;
-        }
+        public boolean called;
 
         public void run() {
             called = true;
-            manager.stopTimer(task);
+        }
+
+        public String getName() {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 }

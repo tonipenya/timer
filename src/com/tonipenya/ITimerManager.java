@@ -4,20 +4,25 @@
  */
 package com.tonipenya;
 
+import java.util.Set;
+
 /**
  *
  * @author tonipenya
  */
 public interface ITimerManager {
 
-    void startTimer(ITask task);
+    void startTimer(ICommand command, long delay);
 
-    void stopTimer(ITask task);
+    void stopTimer(ICommand command);
 
-    boolean isTaskRunning(ITask task);
+    boolean isRunning(ICommand command);
 
-    // TODO: Rename and say clearly in the javadoc that, in case the task is not running, it returns the same received;
-    <T extends ITask> ITask getRunningInstance(T task);
+    // TODO: See if it's possible to get this from command
+    /**
+     * @throws UnsupportedOperationException
+     */
+    long getTimeRemaining(ICommand command);
 
-    long getTimeRemaining(ITask task);
+    Set<ICommand> getRunning();
 }
