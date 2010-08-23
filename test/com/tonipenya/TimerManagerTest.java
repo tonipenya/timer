@@ -4,8 +4,8 @@
  */
 package com.tonipenya;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.tonipenya.TimerManager;
+import com.tonipenya.ICommand;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -47,7 +47,7 @@ public class TimerManagerTest {
 
         instance.startTimer(command, interval);
 
-        pause((long) (interval * MARGIN));
+        Util.pause((long) (interval * MARGIN));
 
         assertTrue(((TestCommand) command).called);
     }
@@ -64,7 +64,7 @@ public class TimerManagerTest {
 
         assertTrue(instance.isRunning(command));
 
-        pause((long) (interval * MARGIN));
+        Util.pause((long) (interval * MARGIN));
 
         assertFalse(instance.isRunning(command));
     }
@@ -90,7 +90,7 @@ public class TimerManagerTest {
         assertTrue(instance.getTimeRemaining(command) > 0);
         assertTrue(instance.getTimeRemaining(command) < interval);
 
-        pause((long) (interval * MARGIN));
+        Util.pause((long) (interval * MARGIN));
 
         exceptionthrown = false;
 
@@ -117,7 +117,7 @@ public class TimerManagerTest {
         assertFalse(instance.getRunning().contains(command2));
         assertEquals(1, instance.getRunning().size());
 
-        pause((long) (internval * 0.3));
+        Util.pause((long) (internval * 0.3));
 
         instance.startTimer(command1, internval);
         assertTrue(instance.getRunning().contains(command0));
@@ -125,7 +125,7 @@ public class TimerManagerTest {
         assertFalse(instance.getRunning().contains(command2));
         assertEquals(2, instance.getRunning().size());
 
-        pause((long) (internval * 0.3));
+        Util.pause((long) (internval * 0.3));
 
         instance.startTimer(command2, internval);
         assertTrue(instance.getRunning().contains(command0));
@@ -133,46 +133,25 @@ public class TimerManagerTest {
         assertTrue(instance.getRunning().contains(command2));
         assertEquals(3, instance.getRunning().size());
 
-        pause((long) (internval * 0.5));
+        Util.pause((long) (internval * 0.5));
 
         assertFalse(instance.getRunning().contains(command0));
         assertTrue(instance.getRunning().contains(command1));
         assertTrue(instance.getRunning().contains(command2));
         assertEquals(2, instance.getRunning().size());
 
-        pause((long) (internval * 0.3));
+        Util.pause((long) (internval * 0.3));
 
         assertFalse(instance.getRunning().contains(command0));
         assertFalse(instance.getRunning().contains(command1));
         assertTrue(instance.getRunning().contains(command2));
         assertEquals(1, instance.getRunning().size());
 
-        pause((long) (internval * 0.3));
+        Util.pause((long) (internval * 0.3));
 
         assertFalse(instance.getRunning().contains(command0));
         assertFalse(instance.getRunning().contains(command1));
         assertFalse(instance.getRunning().contains(command2));
         assertEquals(0, instance.getRunning().size());
-    }
-
-    private void pause(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TimerManagerTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private class TestCommand implements ICommand {
-
-        public boolean called;
-
-        public void run() {
-            called = true;
-        }
-
-        public String getName() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
     }
 }

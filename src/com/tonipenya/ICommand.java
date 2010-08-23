@@ -9,12 +9,6 @@ package com.tonipenya;
  *
  * @author tonipenya
  */
-public interface ITask {
-
-    int getId();
-
+public interface ICommand extends Runnable {
     String getName();
-
-    // TODO: Rename to getRemaining (or something).
-    long getInterval();
 }

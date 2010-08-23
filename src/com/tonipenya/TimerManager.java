@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimerManager implements ITimerManager {
 
-    ScheduledThreadPoolExecutor stpe;
-    Map<ICommand, ScheduledFuture> commandMap;
+    private ScheduledThreadPoolExecutor stpe;
+    private Map<ICommand, ScheduledFuture> commandMap;
 
     public TimerManager() {
         stpe = new ScheduledThreadPoolExecutor(10);
@@ -63,8 +63,10 @@ public class TimerManager implements ITimerManager {
         }
 
         public void run() {
-            command.run();
+            // Keep it like this. First remove, then run. It's necessary in case  a command want to
+            // rerun itself.
             commandMap.remove(command);
+            command.run();
         }
     }
 }

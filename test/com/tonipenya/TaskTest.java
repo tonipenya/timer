@@ -5,6 +5,7 @@
 
 package com.tonipenya;
 
+import com.tonipenya.Task;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
