@@ -16,6 +16,10 @@ public abstract class ChainedCommand implements ICommand{
     private ITimerManager manager;
     private int next;
 
+    public ChainedCommand() {
+        this(null, null);
+    }
+
     public ChainedCommand(ChainedTask task, ITimerManager manager) {
         next = 0;
         this.task = task;
@@ -29,6 +33,16 @@ public abstract class ChainedCommand implements ICommand{
             name += " - " + task.getTasks()[next].getName();
         }
         return name;
+    }
+
+    // Added for javafx compatibility. Damned!
+    public void setManager(ITimerManager manager) {
+        this.manager = manager;
+    }
+
+    // Added for javafx compatibility. Damned!
+    public void setTask(ChainedTask task) {
+        this.task = task;
     }
 
     public void run() {
