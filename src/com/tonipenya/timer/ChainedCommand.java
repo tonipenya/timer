@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.tonipenya.timer;
 
 import com.tonipenya.timer.dmo.ChainedTask;
@@ -11,7 +10,8 @@ import com.tonipenya.timer.dmo.ChainedTask;
  *
  * @author tonipenya
  */
-public abstract class ChainedCommand implements ICommand{
+public abstract class ChainedCommand implements ICommand {
+
     private ChainedTask task;
     private ITimerManager manager;
     private int next;
@@ -27,9 +27,9 @@ public abstract class ChainedCommand implements ICommand{
     }
 
     public String getName() {
-        String name =task.getName();
+        String name = task.getName();
 
-        if(next < task.getTasks().length) {
+        if (next < task.getTasks().length) {
             name += " - " + task.getTasks()[next].getName();
         }
         return name;
@@ -48,9 +48,13 @@ public abstract class ChainedCommand implements ICommand{
     public void run() {
         implementation();
         next++;
-        manager.startTimer(this, task.getTasks()[next].getInterval());
+        
+        if (next < task.getTasks().length) {
+            manager.startTimer(this, task.getTasks()[next].getInterval());
+        } else {
+            next = 0;
+        }
     }
 
     protected abstract void implementation();
-
 }

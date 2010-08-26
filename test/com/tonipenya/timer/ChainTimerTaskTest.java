@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  * @author tonipenya
  */
 public class ChainTimerTaskTest {
+    private static final float MARGIN = 1.1f;
 
     // TODO: Split htis test into more feature-specific ones.
     @Test
@@ -88,5 +89,25 @@ public class ChainTimerTaskTest {
         instance.stopTimer(command);
 
         assertFalse(instance.isRunning(command));
+    }
+
+    @Test
+    public void testIndexOutofBounds() {
+        ITask task = new Task(0, "task0", 100);
+        ITask[] tasks = {task};
+        ChainedTask chained = new ChainedTask(0, "chained", tasks);
+
+        ITimerManager instance = new TimerManager();
+        ChainedCommand command = new TestChainCommand(chained, instance);
+
+        instance.startTimer(command, task.getInterval());
+
+        assertTrue(instance.isRunning(command));
+
+        Util.pause((long) (task.getInterval() * MARGIN));
+
+        assertFalse(instance.isRunning(command));
+        
+        Util.pause((long) (task.getInterval() * MARGIN));
     }
 }

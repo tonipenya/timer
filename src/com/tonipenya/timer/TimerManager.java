@@ -53,7 +53,7 @@ public class TimerManager implements ITimerManager {
         return commandMap.containsKey(command);
     }
     
-    // TODO: This adds an extra class almost for free. Looks like a bad design}
+    // TODO: This adds an extra class almost for free. (Looks like a bad design}
     private class CommandWrapper implements Runnable {
 
         private ICommand command;
